@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBCode Text Formatter</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-code"></i> BBCode Text Formatter</h1>
+            <div class="header-controls">
+                <button id="toggle-instructions" class="btn btn-icon" title="Toggle Instructions"><i class="fas fa-info-circle"></i></button>
+                <div class="dark-mode-toggle">
+                    <input type="checkbox" id="dark-mode-toggle" class="dark-mode-toggle__checkbox">
+                    <label for="dark-mode-toggle" class="dark-mode-toggle__label"></label>
+                </div>
+            </div>
+        </header>
+
+        <div class="introduction card">
+            <div id="instructions" style="display: none;">
+                <h2><i class="fas fa-info-circle"></i> Instructions</h2>
+                <p>This tool helps you format your text with BBCode. Follow these simple steps:</p>
+                <ol>
+                    <li><i class="fas fa-pencil-alt"></i> Enter your text in the input box below.</li>
+                    <li><i class="fas fa-palette"></i> Choose a base style for your entire text.</li>
+                    <li><i class="fas fa-brush"></i> Create custom styles for words or phrases.</li>
+                    <li><i class="fas fa-magic"></i> Apply styles manually or use the random style feature.</li>
+                    <li><i class="fas fa-clipboard"></i> Copy the formatted BBCode or view the result.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="input-section card">
+            <h2><i class="fas fa-pencil-alt"></i> Step 1: Enter Your Text</h2>
+            <label for="input-text">Type or paste your text here:</label>
+            <textarea id="input-text" placeholder="Enter your text..."></textarea>
+        </div>
+
+        <div id="base-style-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2><i class="fas fa-palette"></i> Edit Base Text Style</h2>
+                <p>This style will be applied to your entire text.</p>
+                <form id="base-style-form">
+                    <div class="form-group">
+                        <label for="base-text-color"><i class="fas fa-tint"></i> Text Color:</label>
+                        <input type="color" id="base-text-color" value="#000000">
+                    </div>
+                    <div class="form-group">
+                        <label for="base-bg-color"><i class="fas fa-fill-drip"></i> Background Color:</label>
+                        <input type="color" id="base-bg-color" value="#ffffff">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="base-transparent-bg">
+                            <label for="base-transparent-bg">Transparent</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="base-font-size"><i class="fas fa-text-height"></i> Font Size:</label>
+                        <select id="base-font-size">
+                            <option value="12">Small</option>
+                            <option value="18" selected>Medium</option>
+                            <option value="24">Large</option>
+                        </select>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="base-bold">
+                        <label for="base-bold"><i class="fas fa-bold"></i></label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="base-italic">
+                        <label for="base-italic"><i class="fas fa-italic"></i></label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="base-underline">
+                        <label for="base-underline"><i class="fas fa-underline"></i></label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="base-strikethrough">
+                        <label for="base-strikethrough"><i class="fas fa-strikethrough"></i></label>
+                    </div>
+                    <button type="submit" class="btn"><i class="fas fa-check"></i> Apply Base Style</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="base-style-preview">
+                <h2><i class="fas fa-palette"></i> Base Style Preview</h2>
+                <div id="base-style-container" class="saved-style">
+                    <span id="base-style-preview" class="style-preview">Base Style</span>
+                    <div class="style-actions">
+                        <button id="edit-base-style" class="btn"><i class="fas fa-edit"></i> Edit</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="style-section">
+                <h2><i class="fas fa-brush"></i> Step 3: Create Custom Styles</h2>
+                <p>Create styles to apply to words or phrases in your text.</p>
+                <button id="open-modal-btn" class="btn"><i class="fas fa-plus"></i> Create New Style</button>
+                <div id="saved-styles"></div>
+            </div>
+        </div>
+        <div class="action-section card">
+            <h2><i class="fas fa-magic"></i> Step 4: Apply Styles</h2>
+
+            <div class="manual-apply">
+                <h3><i class="fas fa-hand-pointer"></i> Apply Styles Manually</h3>
+                <p>Select text in the input box and click on a style to apply it.</p>
+            </div>
+            <div class="random-apply">
+                <h3><i class="fas fa-random"></i> Apply Random Styles</h3>
+                <p>Automatically apply random styles to your text.</p>
+                <div class="random-controls">
+                    <label for="format-chance">Chance to format a word (%):</label>
+                    <input type="number" id="format-chance" min="0" max="100" value="70">
+                </div>
+                
+            <div class="random-options">
+                <h3><i class="fas fa-cog"></i> Random Style Options</h3>
+                <p>Choose which elements to randomize when generating styles:</p>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="randomize-color" checked>
+                    <label for="randomize-color"><i class="fas fa-tint"></i></label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="randomize-bg-color" checked>
+                    <label for="randomize-bg-color"><i class="fas fa-fill-drip"></i></label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="randomize-font-size" checked>
+                    <label for="randomize-font-size"><i class="fas fa-text-height"></i></label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="randomize-bold" checked>
+                    <label for="randomize-bold"><i class="fas fa-bold"></i></label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="randomize-italic" checked>
+                    <label for="randomize-italic"><i class="fas fa-italic"></i></label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="randomize-underline" checked>
+                    <label for="randomize-underline"><i class="fas fa-underline"></i></label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="randomize-strikethrough" checked>
+                    <label for="randomize-strikethrough"><i class="fas fa-strikethrough"></i></label>
+                </div>
+            </div>
+
+                <button id="apply-random" class="btn"><i class="fas fa-random"></i> Apply Random Styles</button>
+                <button id="generate-random" class="btn"><i class="fas fa-dice"></i> Generate New Random Style</button>
+            </div>
+        </div>
+
+        <div class="output-section card">
+            <h2><i class="fas fa-clipboard"></i> Step 5: Get Your Formatted Text</h2>
+            <h3>BBCode Output</h3>
+            <textarea id="output-text" readonly></textarea>
+            <button id="copy-bbcode" class="btn copy-button"><i class="fas fa-copy"></i> Copy BBCode</button>
+        </div>
+
+        <div class="result-section card">
+            <h3><i class="fas fa-eye"></i> Formatted Result Preview</h3>
+            <div id="result-viewer"></div>
+        </div>
+
+    </div>
+
+    <div id="style-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-title">Create New Style</h2>
+            <form id="style-form">
+                <input type="text" id="style-name" placeholder="Style Name">
+                <div class="color-inputs">
+                    <input type="color" id="text-color">
+                    <label for="text-color"><i class="fas fa-tint"></i> Text Color</label>
+                    <input type="color" id="bg-color">
+                    <label for="bg-color"><i class="fas fa-fill-drip"></i> Background</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="transparent-bg">
+                    <label for="transparent-bg">Transparent Background</label>
+                </div>
+                <div class="form-group">
+                    <label for="font-size"><i class="fas fa-text-height"></i> Font Size (px):</label>
+                    <input type="number" id="font-size" min="8" max="20" value="12">
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="bold">
+                    <label for="bold"><i class="fas fa-bold"></i></label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="italic">
+                    <label for="italic"><i class="fas fa-italic"></i></label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="underline">
+                    <label for="underline"><i class="fas fa-underline"></i></label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="strikethrough">
+                    <label for="strikethrough"><i class="fas fa-strikethrough"></i></label>
+                </div>
+                <button type="submit" class="btn">Save Style</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
